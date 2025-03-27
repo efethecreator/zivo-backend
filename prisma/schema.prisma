@@ -1,5 +1,3 @@
-
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,7 +8,219 @@ datasource db {
 }
 
 model User {
-    id    Int     @id @default(autoincrement())
-    name  String
-    email String  @unique
+  id            String   @id @default(uuid())
+  fullName      String
+  email         String   @unique
+  passwordHash  String
+  userType      String
+  isLawApproved Boolean
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  profile              Profile?
+  roles                UserRole[]
+  reviews              Review[]         @relation("UserReviews")
+  favorites            Favorite[]       @relation("UserFavorites")
+  appointments         Appointment[]    @relation("UserAppointments")
+  appointmentsAsWorker Appointment[]    @relation("UserShifts")
+  shifts               BusinessWorker[] @relation("UserShifts")
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  phone     String
+  location  String
+  gender    String
+  biography String
+  photoUrl  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User       @relation(fields: [userId], references: [id])
+  businesses Business[] @relation("ProfileBusinesses")
+}
+
+model Role {
+  id    String     @id @default(uuid())
+  name  String
+  users UserRole[]
+}
+
+model UserRole {
+  userId String
+  roleId String
+
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@id([userId, roleId])
+}
+
+model Business {
+  id              String   @id @default(uuid())
+  ownerId         String
+  name            String
+  description     String
+  address         String
+  latitude        Decimal
+  longitude       Decimal
+  phone           String
+  profileImageUrl String
+  coverImageUrl   String
+  businessTypeId  String
+  isVerified      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  owner        Profile            @relation("ProfileBusinesses", fields: [ownerId], references: [id])
+  businessType BusinessType       @relation(fields: [businessTypeId], references: [id])
+  contacts     BusinessContact[]
+  campaigns    BusinessCampaign[]
+  workers      BusinessWorker[]
+  services     Service[]
+  appointments Appointment[]
+  shifts       BusinessShift[]
+  reviews      Review[]           @relation("BusinessReviews")
+  favorites    Favorite[]         @relation("BusinessFavorites")
+  portfolios   Portfolio[]
+}
+
+model BusinessType {
+  id         String     @id @default(uuid())
+  name       String
+  businesses Business[]
+}
+
+model BusinessContact {
+  id           String @id @default(uuid())
+  businessId   String
+  contactName  String
+  contactValue String
+
+  business Business @relation(fields: [businessId], references: [id])
+}
+
+model BusinessCampaign {
+  id          String  @id @default(uuid())
+  businessId  String
+  name        String
+  price       Decimal
+  description String
+  timeRange   String
+
+  business     Business      @relation(fields: [businessId], references: [id])
+  appointments Appointment[]
+}
+
+model WorkerType {
+  id      String           @id @default(uuid())
+  name    String
+  workers BusinessWorker[]
+}
+
+model BusinessWorker {
+  id           String @id @default(uuid())
+  businessId   String
+  userId       String
+  workerTypeId String
+
+  business   Business   @relation(fields: [businessId], references: [id])
+  user       User       @relation("UserShifts", fields: [userId], references: [id])
+  workerType WorkerType @relation(fields: [workerTypeId], references: [id])
+}
+
+model Service {
+  id              String   @id @default(uuid())
+  businessId      String
+  name            String
+  description     String
+  durationMinutes Int
+  price           Decimal
+  category        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  business            Business             @relation(fields: [businessId], references: [id])
+  appointmentServices AppointmentService[]
+}
+
+model Appointment {
+  id              String   @id @default(uuid())
+  customerId      String
+  businessId      String
+  workerId        String
+  appointmentTime DateTime
+  status          String
+  totalPrice      Decimal
+  campaignId      String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  customer            User                 @relation("UserAppointments", fields: [customerId], references: [id])
+  business            Business             @relation(fields: [businessId], references: [id])
+  worker              User                 @relation("UserShifts", fields: [workerId], references: [id])
+  campaign            BusinessCampaign?    @relation(fields: [campaignId], references: [id])
+  appointmentServices AppointmentService[]
+}
+
+model AppointmentService {
+  id                String  @id @default(uuid())
+  appointmentId     String
+  serviceId         String
+  priceAtBooking    Decimal
+  durationAtBooking Int
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+  service     Service     @relation(fields: [serviceId], references: [id])
+}
+
+model ShiftTime {
+  id        String   @id @default(uuid())
+  startTime DateTime
+  endTime   DateTime
+
+  businessShifts BusinessShift[]
+}
+
+model BusinessShift {
+  id          String @id @default(uuid())
+  businessId  String
+  shiftTimeId String
+  dayOfWeek   Int
+
+  business  Business  @relation(fields: [businessId], references: [id])
+  shiftTime ShiftTime @relation(fields: [shiftTimeId], references: [id])
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  customerId String
+  businessId String
+  rating     Int
+  comment    String
+  createdAt  DateTime @default(now())
+
+  customer User     @relation("UserReviews", fields: [customerId], references: [id])
+  business Business @relation("BusinessReviews", fields: [businessId], references: [id])
+}
+
+model Favorite {
+  id         String   @id @default(uuid())
+  customerId String
+  businessId String
+  createdAt  DateTime @default(now())
+
+  customer User     @relation("UserFavorites", fields: [customerId], references: [id])
+  business Business @relation("BusinessFavorites", fields: [businessId], references: [id])
+}
+
+model Portfolio {
+  id          String   @id @default(uuid())
+  businessId  String
+  imageUrl    String
+  description String
+  uploadedAt  DateTime @default(now())
+
+  business Business @relation(fields: [businessId], references: [id])
 }
