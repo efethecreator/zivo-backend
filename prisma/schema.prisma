@@ -17,13 +17,10 @@ model User {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  profile              Profile?
-  roles                UserRole[]
-  reviews              Review[]         @relation("UserReviews")
-  favorites            Favorite[]       @relation("UserFavorites")
-  appointments         Appointment[]    @relation("UserAppointments")
-  appointmentsAsWorker Appointment[]    @relation("UserShifts")
-  shifts               BusinessWorker[] @relation("UserShifts")
+  profile Profile?
+  roles   UserRole[]
+
+  @@map("users")
 }
 
 model Profile {
@@ -37,14 +34,23 @@ model Profile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user       User       @relation(fields: [userId], references: [id])
-  businesses Business[] @relation("ProfileBusinesses")
+  user                User                @relation(fields: [userId], references: [id])
+  businesses          Business[]         @relation("ProfileBusinesses")
+  businessWorkers     BusinessWorker[]
+  appointments        Appointment[]      @relation("ProfileAppointments")
+  appointmentsAsWorker Appointment[]     @relation("ProfileShifts")
+  reviews             Review[]           @relation("ProfileReviews")
+  favorites           Favorite[]         @relation("ProfileFavorites")
+
+  @@map("profiles")
 }
 
 model Role {
   id    String     @id @default(uuid())
   name  String
   users UserRole[]
+
+  @@map("roles")
 }
 
 model UserRole {
@@ -55,6 +61,7 @@ model UserRole {
   role Role @relation(fields: [roleId], references: [id])
 
   @@id([userId, roleId])
+  @@map("user_roles")
 }
 
 model Business {
@@ -84,12 +91,16 @@ model Business {
   reviews      Review[]           @relation("BusinessReviews")
   favorites    Favorite[]         @relation("BusinessFavorites")
   portfolios   Portfolio[]
+
+  @@map("businesses")
 }
 
 model BusinessType {
   id         String     @id @default(uuid())
   name       String
   businesses Business[]
+
+  @@map("business_types")
 }
 
 model BusinessContact {
@@ -99,6 +110,8 @@ model BusinessContact {
   contactValue String
 
   business Business @relation(fields: [businessId], references: [id])
+
+  @@map("business_contacts")
 }
 
 model BusinessCampaign {
@@ -111,12 +124,16 @@ model BusinessCampaign {
 
   business     Business      @relation(fields: [businessId], references: [id])
   appointments Appointment[]
+
+  @@map("business_campaigns")
 }
 
 model WorkerType {
   id      String           @id @default(uuid())
   name    String
   workers BusinessWorker[]
+
+  @@map("worker_types")
 }
 
 model BusinessWorker {
@@ -126,8 +143,10 @@ model BusinessWorker {
   workerTypeId String
 
   business   Business   @relation(fields: [businessId], references: [id])
-  user       User       @relation("UserShifts", fields: [userId], references: [id])
+  user       Profile    @relation(fields: [userId], references: [id])
   workerType WorkerType @relation(fields: [workerTypeId], references: [id])
+
+  @@map("business_workers")
 }
 
 model Service {
@@ -143,6 +162,8 @@ model Service {
 
   business            Business             @relation(fields: [businessId], references: [id])
   appointmentServices AppointmentService[]
+
+  @@map("services")
 }
 
 model Appointment {
@@ -157,11 +178,13 @@ model Appointment {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  customer            User                 @relation("UserAppointments", fields: [customerId], references: [id])
+  customer            Profile              @relation("ProfileAppointments", fields: [customerId], references: [id])
   business            Business             @relation(fields: [businessId], references: [id])
-  worker              User                 @relation("UserShifts", fields: [workerId], references: [id])
+  worker              Profile              @relation("ProfileShifts", fields: [workerId], references: [id])
   campaign            BusinessCampaign?    @relation(fields: [campaignId], references: [id])
   appointmentServices AppointmentService[]
+
+  @@map("appointments")
 }
 
 model AppointmentService {
@@ -173,6 +196,8 @@ model AppointmentService {
 
   appointment Appointment @relation(fields: [appointmentId], references: [id])
   service     Service     @relation(fields: [serviceId], references: [id])
+
+  @@map("appointment_services")
 }
 
 model ShiftTime {
@@ -181,6 +206,8 @@ model ShiftTime {
   endTime   DateTime
 
   businessShifts BusinessShift[]
+
+  @@map("shift_times")
 }
 
 model BusinessShift {
@@ -191,6 +218,8 @@ model BusinessShift {
 
   business  Business  @relation(fields: [businessId], references: [id])
   shiftTime ShiftTime @relation(fields: [shiftTimeId], references: [id])
+
+  @@map("business_shifts")
 }
 
 model Review {
@@ -201,8 +230,10 @@ model Review {
   comment    String
   createdAt  DateTime @default(now())
 
-  customer User     @relation("UserReviews", fields: [customerId], references: [id])
+  customer Profile  @relation("ProfileReviews", fields: [customerId], references: [id])
   business Business @relation("BusinessReviews", fields: [businessId], references: [id])
+
+  @@map("reviews")
 }
 
 model Favorite {
@@ -211,8 +242,10 @@ model Favorite {
   businessId String
   createdAt  DateTime @default(now())
 
-  customer User     @relation("UserFavorites", fields: [customerId], references: [id])
+  customer Profile  @relation("ProfileFavorites", fields: [customerId], references: [id])
   business Business @relation("BusinessFavorites", fields: [businessId], references: [id])
+
+  @@map("favorites")
 }
 
 model Portfolio {
@@ -223,4 +256,6 @@ model Portfolio {
   uploadedAt  DateTime @default(now())
 
   business Business @relation(fields: [businessId], references: [id])
+
+  @@map("portfolios")
 }
