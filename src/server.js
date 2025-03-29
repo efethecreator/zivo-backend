@@ -1,5 +1,5 @@
 import express from 'express';
-import userRoutes from './routes/user.routes.js';
+import authRoutes from './routes/auth.routes.js';
 import { PORT, FRONTEND_URL } from "./config/config.js";
 import dotenv from 'dotenv';
 import cors from "cors";
@@ -16,7 +16,7 @@ app.use(
   );
 
 app.use(express.json()); 
-app.use('/api/v1/users', userRoutes);
+app.use('/api/auth', authRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on PORT ${PORT}`);
