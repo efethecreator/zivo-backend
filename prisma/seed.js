@@ -1,55 +1,61 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
+
 const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 Seeding started...");
 
-  // 1. Roller
+  const saltRounds = 10;
+
   const [adminRole, ownerRole, customerRole] = await Promise.all([
     prisma.role.create({ data: { name: "admin" } }),
     prisma.role.create({ data: { name: "store_owner" } }),
     prisma.role.create({ data: { name: "customer" } }),
   ]);
 
-  // 2. Kullanıcılar
+  const [adminPass, customerPass, ownerPass] = await Promise.all([
+    bcrypt.hash("adminpass", saltRounds),
+    bcrypt.hash("customerpass", saltRounds),
+    bcrypt.hash("ownerpass", saltRounds),
+  ]);
+
   const [adminUser, customerUser, storeOwnerUser] = await Promise.all([
     prisma.user.create({
       data: {
-        fullName: "Admiawdawn User",
-        email: "admin@example.com",
-        passwordHash: "adminpass",
+        fullName: "Admin User",
+        email: "admin1@example.com",
+        passwordHash: adminPass,
         userType: "admin",
         isLawApproved: true,
       },
     }),
     prisma.user.create({
       data: {
-        fullName: "Custodawdawmer User",
-        email: "customer@example.com",
-        passwordHash: "customerpass",
+        fullName: "Customer User",
+        email: "customer1@example.com",
+        passwordHash: customerPass,
         userType: "customer",
         isLawApproved: true,
       },
     }),
     prisma.user.create({
       data: {
-        fullName: "Stordawdawe Owner",
-        email: "owner@example.com",
-        passwordHash: "ownerpass",
+        fullName: "Store Owner",
+        email: "owner1@example.com",
+        passwordHash: ownerPass,
         userType: "store_owner",
         isLawApproved: true,
       },
     }),
   ]);
 
-  // 3. Roller atanıyor
   await Promise.all([
     prisma.userRole.create({ data: { userId: adminUser.id, roleId: adminRole.id } }),
     prisma.userRole.create({ data: { userId: customerUser.id, roleId: customerRole.id } }),
     prisma.userRole.create({ data: { userId: storeOwnerUser.id, roleId: ownerRole.id } }),
   ]);
 
-  // 4. Profiller
   const [adminProfile, customerProfile, storeOwnerProfile] = await Promise.all([
     prisma.profile.create({
       data: {
@@ -83,12 +89,10 @@ async function main() {
     }),
   ]);
 
-  // 5. Business Type
   const barbershopType = await prisma.businessType.create({
     data: { name: "Barbershop" },
   });
 
-  // 6. İşletme
   const business = await prisma.business.create({
     data: {
       ownerId: storeOwnerProfile.id,
@@ -105,7 +109,6 @@ async function main() {
     },
   });
 
-  // 7. Hizmetler
   const haircut = await prisma.service.create({
     data: {
       businessId: business.id,
@@ -117,12 +120,10 @@ async function main() {
     },
   });
 
-  // 8. WorkerType
   const barberType = await prisma.workerType.create({
     data: { name: "Barber" },
   });
 
-  // 9. Business Worker
   await prisma.businessWorker.create({
     data: {
       businessId: business.id,

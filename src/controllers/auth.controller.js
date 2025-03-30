@@ -7,8 +7,14 @@ export async function register(req, res) {
   const { fullName, email, password, userType } = req.body;
 
   try {
+    const allowedRoles = ["customer", "store_owner"];
+    if (!allowedRoles.includes(userType)) {
+      return res.status(400).json({ message: "Geçersiz kullanıcı tipi" });
+    }
+
     const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) return res.status(400).json({ message: "Email zaten kayıtlı" });
+    if (existing)
+      return res.status(400).json({ message: "Email zaten kayıtlı" });
 
     const passwordHash = await bcrypt.hash(password, 10);
 
@@ -29,16 +35,36 @@ export async function register(req, res) {
           },
         },
       },
-      include: { profile: true },
     });
 
-    res.status(201).json({ message: "Kayıt başarılı", user });
+    const role = await prisma.role.findUnique({ where: { name: userType } });
+    if (!role) return res.status(500).json({ message: "Rol bulunamadı" });
+
+    await prisma.userRole.create({
+      data: {
+        userId: user.id,
+        roleId: role.id,
+      },
+    });
+
+    const fullUser = await prisma.user.findUnique({
+      where: { id: user.id },
+      include: {
+        profile: true,
+        roles: {
+          include: {
+            role: true,
+          },
+        },
+      },
+    });
+
+    res.status(201).json({ message: "Kayıt başarılı", user: fullUser });
   } catch (err) {
-    console.error(err);
+    console.error("Register error:", err);
     res.status(500).json({ message: "Sunucu hatası" });
   }
 }
-
 
 export async function login(req, res) {
   const { email, password } = req.body;
@@ -50,38 +76,38 @@ export async function login(req, res) {
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) return res.status(400).json({ message: "Şifre hatalı" });
 
-    const token = generateToken({ id: user.id, userType: user.userType });
+    const token = generateToken({
+      userId: user.id,
+      userType: user.userType,
+    });
+
     res.status(200).json({ token });
   } catch (err) {
-    console.error(err);
+    console.error("Login error:", err);
     res.status(500).json({ message: "Sunucu hatası" });
   }
 }
 
-
 export async function getMe(req, res) {
-    try {
-      const user = await prisma.user.findUnique({
-        where: { id: req.user.id },
-        include: {
-          profile: true,
-          roles: {
-            include: {
-              role: true,
-            },
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.userId }, // burada dikkat!
+      include: {
+        profile: true,
+        roles: {
+          include: {
+            role: true,
           },
         },
-      });
-  
-      if (!user) {
-        return res.status(404).json({ message: "Kullanıcı bulunamadı" });
-      }
-  
-      const { passwordHash, ...safeUser } = user;
-  
-      res.status(200).json(safeUser);
-    } catch (error) {
-      console.error("GET /me error:", error);
-      res.status(500).json({ message: "Sunucu hatası" });
-    }
+      },
+    });
+
+    if (!user) return res.status(404).json({ message: "Kullanıcı bulunamadı" });
+
+    const { passwordHash, ...safeUser } = user;
+    res.status(200).json(safeUser);
+  } catch (err) {
+    console.error("GET /me error:", err);
+    res.status(500).json({ message: "Sunucu hatası" });
   }
+}
