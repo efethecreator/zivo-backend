@@ -16,6 +16,9 @@ model User {
   isLawApproved Boolean
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
 
   profile Profile?
   roles   UserRole[]
@@ -33,6 +36,10 @@ model Profile {
   photoUrl  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
+
 
   user                User                @relation(fields: [userId], references: [id])
   businesses          Business[]         @relation("ProfileBusinesses")
@@ -50,12 +57,21 @@ model Role {
   name  String     @unique
   users UserRole[]
 
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
+
+
   @@map("roles")
 }
 
 model UserRole {
   userId String
   roleId String
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
+
 
   user User @relation(fields: [userId], references: [id])
   role Role @relation(fields: [roleId], references: [id])
@@ -79,6 +95,10 @@ model Business {
   isVerified      Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
+
 
   owner        Profile            @relation("ProfileBusinesses", fields: [ownerId], references: [id])
   businessType BusinessType       @relation(fields: [businessTypeId], references: [id])
@@ -99,6 +119,9 @@ model BusinessType {
   id         String     @id @default(uuid())
   name       String
   businesses Business[]
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
 
   @@map("business_types")
 }
@@ -108,6 +131,9 @@ model BusinessContact {
   businessId   String
   contactName  String
   contactValue String
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
 
   business Business @relation(fields: [businessId], references: [id])
 
@@ -121,6 +147,9 @@ model BusinessCampaign {
   price       Decimal
   description String
   timeRange   String
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
 
   business     Business      @relation(fields: [businessId], references: [id])
   appointments Appointment[]
@@ -129,6 +158,10 @@ model BusinessCampaign {
 }
 
 model WorkerType {
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
+
   id      String           @id @default(uuid())
   name    String
   workers BusinessWorker[]
@@ -137,10 +170,14 @@ model WorkerType {
 }
 
 model BusinessWorker {
+
   id           String @id @default(uuid())
   businessId   String
   userId       String
   workerTypeId String
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
 
   business   Business   @relation(fields: [businessId], references: [id])
   user       Profile    @relation(fields: [userId], references: [id])
@@ -150,6 +187,7 @@ model BusinessWorker {
 }
 
 model Service {
+
   id              String   @id @default(uuid())
   businessId      String
   name            String
@@ -159,6 +197,9 @@ model Service {
   category        String
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
 
   business            Business             @relation(fields: [businessId], references: [id])
   appointmentServices AppointmentService[]
@@ -167,6 +208,7 @@ model Service {
 }
 
 model Appointment {
+
   id              String   @id @default(uuid())
   customerId      String
   businessId      String
@@ -177,6 +219,9 @@ model Appointment {
   campaignId      String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
 
   customer            Profile              @relation("ProfileAppointments", fields: [customerId], references: [id])
   business            Business             @relation(fields: [businessId], references: [id])
@@ -188,11 +233,15 @@ model Appointment {
 }
 
 model AppointmentService {
+
   id                String  @id @default(uuid())
   appointmentId     String
   serviceId         String
   priceAtBooking    Decimal
   durationAtBooking Int
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
 
   appointment Appointment @relation(fields: [appointmentId], references: [id])
   service     Service     @relation(fields: [serviceId], references: [id])
@@ -201,9 +250,13 @@ model AppointmentService {
 }
 
 model ShiftTime {
+
   id        String   @id @default(uuid())
   startTime DateTime
   endTime   DateTime
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
 
   businessShifts BusinessShift[]
 
@@ -211,10 +264,14 @@ model ShiftTime {
 }
 
 model BusinessShift {
+
   id          String @id @default(uuid())
   businessId  String
   shiftTimeId String
   dayOfWeek   Int
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
 
   business  Business  @relation(fields: [businessId], references: [id])
   shiftTime ShiftTime @relation(fields: [shiftTimeId], references: [id])
@@ -229,6 +286,9 @@ model Review {
   rating     Int
   comment    String
   createdAt  DateTime @default(now())
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
 
   customer Profile  @relation("ProfileReviews", fields: [customerId], references: [id])
   business Business @relation("BusinessReviews", fields: [businessId], references: [id])
@@ -241,6 +301,9 @@ model Favorite {
   customerId String
   businessId String
   createdAt  DateTime @default(now())
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
 
   customer Profile  @relation("ProfileFavorites", fields: [customerId], references: [id])
   business Business @relation("BusinessFavorites", fields: [businessId], references: [id])
@@ -254,6 +317,9 @@ model Portfolio {
   imageUrl    String
   description String
   uploadedAt  DateTime @default(now())
+  isDeleted   Boolean  @default(false)
+  deletedAt   DateTime?
+  deletedBy   String?
 
   business Business @relation(fields: [businessId], references: [id])
 

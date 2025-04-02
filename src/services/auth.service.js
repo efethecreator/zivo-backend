@@ -53,12 +53,28 @@ export async function loginUser(email, password) {
   const isMatch = await bcrypt.compare(password, user.passwordHash);
   if (!isMatch) throw new Error("Şifre hatalı");
 
+  const fullUser = await findUserByIdWithProfileAndRoles(user.id);
+  if (!fullUser.profile?.id) {
+    throw new Error("Kullanıcının profili eksik");
+  }
+
   const token = generateToken({
-    userId: user.id,
-    userType: user.userType,
+    userId: fullUser.id,
+    email: fullUser.email,
+    profileId: fullUser.profile.id, // 👈 işte bu!
+    role: fullUser.roles[0]?.role?.name || "unknown"
   });
 
-  return token;
+  return {
+    token,
+    user: {
+      id: fullUser.id,
+      email: fullUser.email,
+      fullName: fullUser.fullName,
+      profileId: fullUser.profile.id,
+      role: fullUser.roles[0]?.role?.name
+    }
+  };
 }
 
 export async function getMeById(userId) {
