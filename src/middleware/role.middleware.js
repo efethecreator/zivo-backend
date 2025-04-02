@@ -11,6 +11,7 @@ export function checkRole(...allowedRoles) {
 
       const token = authHeader.split(" ")[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log("✅ decoded token:", decoded);
 
       // Kullanıcının rollerini çek
       const userWithRoles = await prisma.user.findUnique({
@@ -23,12 +24,19 @@ export function checkRole(...allowedRoles) {
           },
         },
       });
+      console.log("✅ userWithRoles:", userWithRoles);
 
       const userRoles = userWithRoles.roles.map((ur) => ur.role.name);
 
       const hasAccess = allowedRoles.some((role) => userRoles.includes(role));
+      console.log("👉 Kullanıcının roller:", userRoles);
+      console.log("👉 Gerekli roller:", allowedRoles);
+      console.log("👉 Erişim var mı?", hasAccess);
+
       if (!hasAccess) {
-        return res.status(403).json({ message: "Erişim reddedildi. Yetersiz rol." });
+        return res
+          .status(403)
+          .json({ message: "Erişim reddedildi. Yetersiz rol." });
       }
 
       req.user = decoded;
