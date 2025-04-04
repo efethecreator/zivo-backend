@@ -7,6 +7,9 @@ import profileRoutes from "./routes/profile.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import businessRoutes from "./routes/business.routes.js";
 import serviceRoutes from "./routes/services.routes.js";
+import appointmentRoutes from "./routes/appointment.routes.js";
+import businessWorkerRoutes from "./routes/businessWorker.routes.js";
+import workerTypeRoutes from "./routes/workerType.routes.js";
 import dotenv from "dotenv";
 import cors from "cors";
 
@@ -29,6 +32,9 @@ app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/business", businessRoutes);
 app.use("/api/v1/services", serviceRoutes);
+app.use("/api/v1/appointments", appointmentRoutes); 
+app.use("/api/v1/business-workers", businessWorkerRoutes); 
+app.use("/api/v1/worker-types", workerTypeRoutes);
 
 
 app.listen(PORT, () => {
