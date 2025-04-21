@@ -22,6 +22,8 @@ import {
       res.status(500).json({ error: err.message });
     }
   };
+
+  
   
   export const updateWorkerTypeController = async (req, res) => {
     try {

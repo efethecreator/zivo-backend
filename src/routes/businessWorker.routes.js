@@ -18,12 +18,7 @@ router.post(
   createBusinessWorkerController
 );
 
-router.get(
-  "/:businessId",
-  authenticateToken,
-  checkRole("store_owner", "admin"),
-  getBusinessWorkersController
-);
+router.get("/:businessId", getBusinessWorkersController);
 
 router.put(
   "/:id",

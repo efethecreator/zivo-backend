@@ -9,10 +9,23 @@ async function main() {
   const saltRounds = 10;
 
   const [adminRole, ownerRole, customerRole] = await Promise.all([
-    prisma.role.create({ data: { name: "admin" } }),
-    prisma.role.create({ data: { name: "store_owner" } }),
-    prisma.role.create({ data: { name: "customer" } }),
+    prisma.role.upsert({
+      where: { name: "admin" },
+      update: {},
+      create: { name: "admin" },
+    }),
+    prisma.role.upsert({
+      where: { name: "store_owner" },
+      update: {},
+      create: { name: "store_owner" },
+    }),
+    prisma.role.upsert({
+      where: { name: "customer" },
+      update: {},
+      create: { name: "customer" },
+    }),
   ]);
+  
 
   const [adminPass, customerPass, ownerPass] = await Promise.all([
     bcrypt.hash("adminpass", saltRounds),
@@ -127,8 +140,9 @@ async function main() {
   await prisma.businessWorker.create({
     data: {
       businessId: business.id,
-      userId: storeOwnerProfile.id,
       workerTypeId: barberType.id,
+      firstName: "Anıl",
+      lastName: "Piyancı"
     },
   });
 

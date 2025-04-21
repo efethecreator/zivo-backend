@@ -8,6 +8,9 @@ CREATE TABLE "users" (
     "isLawApproved" BOOLEAN NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -23,6 +26,9 @@ CREATE TABLE "profiles" (
     "photoUrl" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "profiles_pkey" PRIMARY KEY ("id")
 );
@@ -31,6 +37,9 @@ CREATE TABLE "profiles" (
 CREATE TABLE "roles" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "roles_pkey" PRIMARY KEY ("id")
 );
@@ -39,6 +48,9 @@ CREATE TABLE "roles" (
 CREATE TABLE "user_roles" (
     "userId" TEXT NOT NULL,
     "roleId" TEXT NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "user_roles_pkey" PRIMARY KEY ("userId","roleId")
 );
@@ -59,6 +71,9 @@ CREATE TABLE "businesses" (
     "isVerified" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "businesses_pkey" PRIMARY KEY ("id")
 );
@@ -67,6 +82,9 @@ CREATE TABLE "businesses" (
 CREATE TABLE "business_types" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "business_types_pkey" PRIMARY KEY ("id")
 );
@@ -77,6 +95,9 @@ CREATE TABLE "business_contacts" (
     "businessId" TEXT NOT NULL,
     "contactName" TEXT NOT NULL,
     "contactValue" TEXT NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "business_contacts_pkey" PRIMARY KEY ("id")
 );
@@ -89,12 +110,18 @@ CREATE TABLE "business_campaigns" (
     "price" DECIMAL(65,30) NOT NULL,
     "description" TEXT NOT NULL,
     "timeRange" TEXT NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "business_campaigns_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "worker_types" (
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
 
@@ -105,8 +132,12 @@ CREATE TABLE "worker_types" (
 CREATE TABLE "business_workers" (
     "id" TEXT NOT NULL,
     "businessId" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
     "workerTypeId" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "business_workers_pkey" PRIMARY KEY ("id")
 );
@@ -122,6 +153,9 @@ CREATE TABLE "services" (
     "category" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "services_pkey" PRIMARY KEY ("id")
 );
@@ -138,6 +172,9 @@ CREATE TABLE "appointments" (
     "campaignId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "appointments_pkey" PRIMARY KEY ("id")
 );
@@ -149,6 +186,9 @@ CREATE TABLE "appointment_services" (
     "serviceId" TEXT NOT NULL,
     "priceAtBooking" DECIMAL(65,30) NOT NULL,
     "durationAtBooking" INTEGER NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "appointment_services_pkey" PRIMARY KEY ("id")
 );
@@ -158,6 +198,9 @@ CREATE TABLE "shift_times" (
     "id" TEXT NOT NULL,
     "startTime" TIMESTAMP(3) NOT NULL,
     "endTime" TIMESTAMP(3) NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "shift_times_pkey" PRIMARY KEY ("id")
 );
@@ -168,6 +211,9 @@ CREATE TABLE "business_shifts" (
     "businessId" TEXT NOT NULL,
     "shiftTimeId" TEXT NOT NULL,
     "dayOfWeek" INTEGER NOT NULL,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "business_shifts_pkey" PRIMARY KEY ("id")
 );
@@ -180,6 +226,9 @@ CREATE TABLE "reviews" (
     "rating" INTEGER NOT NULL,
     "comment" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "reviews_pkey" PRIMARY KEY ("id")
 );
@@ -190,6 +239,9 @@ CREATE TABLE "favorites" (
     "customerId" TEXT NOT NULL,
     "businessId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "favorites_pkey" PRIMARY KEY ("id")
 );
@@ -201,6 +253,9 @@ CREATE TABLE "portfolios" (
     "imageUrl" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "uploadedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "isDeleted" BOOLEAN NOT NULL DEFAULT false,
+    "deletedAt" TIMESTAMP(3),
+    "deletedBy" TEXT,
 
     CONSTRAINT "portfolios_pkey" PRIMARY KEY ("id")
 );
@@ -237,9 +292,6 @@ ALTER TABLE "business_campaigns" ADD CONSTRAINT "business_campaigns_businessId_f
 
 -- AddForeignKey
 ALTER TABLE "business_workers" ADD CONSTRAINT "business_workers_businessId_fkey" FOREIGN KEY ("businessId") REFERENCES "businesses"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "business_workers" ADD CONSTRAINT "business_workers_userId_fkey" FOREIGN KEY ("userId") REFERENCES "profiles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "business_workers" ADD CONSTRAINT "business_workers_workerTypeId_fkey" FOREIGN KEY ("workerTypeId") REFERENCES "worker_types"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

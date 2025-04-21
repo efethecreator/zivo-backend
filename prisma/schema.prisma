@@ -36,14 +36,12 @@ model Profile {
   photoUrl  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  isDeleted   Boolean  @default(false)
-  deletedAt   DateTime?
-  deletedBy   String?
-
+  isDeleted Boolean  @default(false)
+  deletedAt DateTime?
+  deletedBy String?
 
   user                User                @relation(fields: [userId], references: [id])
   businesses          Business[]         @relation("ProfileBusinesses")
-  businessWorkers     BusinessWorker[]
   appointments        Appointment[]      @relation("ProfileAppointments")
   appointmentsAsWorker Appointment[]     @relation("ProfileShifts")
   reviews             Review[]           @relation("ProfileReviews")
@@ -51,6 +49,7 @@ model Profile {
 
   @@map("profiles")
 }
+
 
 model Role {
   id    String     @id @default(uuid())
@@ -171,20 +170,21 @@ model WorkerType {
 
 model BusinessWorker {
 
-  id           String @id @default(uuid())
+  id           String   @id @default(uuid())
   businessId   String
-  userId       String
   workerTypeId String
-  isDeleted   Boolean  @default(false)
-  deletedAt   DateTime?
-  deletedBy   String?
+  firstName    String
+  lastName     String
+  isDeleted    Boolean  @default(false)
+  deletedAt    DateTime?
+  deletedBy    String?
 
-  business   Business   @relation(fields: [businessId], references: [id])
-  user       Profile    @relation(fields: [userId], references: [id])
-  workerType WorkerType @relation(fields: [workerTypeId], references: [id])
+  business     Business   @relation(fields: [businessId], references: [id])
+  workerType   WorkerType @relation(fields: [workerTypeId], references: [id])
 
   @@map("business_workers")
 }
+
 
 model Service {
 
