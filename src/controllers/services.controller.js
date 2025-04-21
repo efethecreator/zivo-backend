@@ -4,6 +4,7 @@ import {
     getServiceByIdService,
     updateServiceByIdService,
     deleteServiceByIdService,
+    getServiceByBusinessIdService
   } from "../services/services.service.js";
   
   export const createServiceController = async (req, res) => {
@@ -58,8 +59,8 @@ import {
   
   export const getServiceByBusinessIdController = async (req, res) => {
     try {
-      const { businessId } = req.query;
-      const services = await getAllServicesService(businessId);
+      const { businessId } = req.params;
+      const services = await getServiceByBusinessIdService(businessId);
       res.json(services);
     } catch (err) {
       res.status(500).json({ error: err.message });

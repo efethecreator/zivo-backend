@@ -2,6 +2,7 @@ import {
     createService as createRepo,
     getAllServices,
     getServiceById,
+    getServiceByBusinessId,
     updateService,
     softDeleteService,
   } from "../repositories/services.repository.js";
