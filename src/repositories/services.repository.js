@@ -27,3 +27,8 @@ export const softDeleteService = (id, deletedBy) =>
       deletedBy,
     },
   });
+
+  export const getServiceByBusinessId = (businessId) =>
+  prisma.service.findMany({
+    where: { businessId, isDeleted: false },
+  });

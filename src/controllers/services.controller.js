@@ -56,3 +56,12 @@ import {
     }
   };
   
+  export const getServiceByBusinessIdController = async (req, res) => {
+    try {
+      const { businessId } = req.query;
+      const services = await getAllServicesService(businessId);
+      res.json(services);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }

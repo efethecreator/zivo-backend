@@ -17,6 +17,10 @@ import {
   export const getServiceByIdService = async (id) => {
     return await getServiceById(id);
   };
+
+  export const getServiceByBusinessIdService = async (businessId) => {
+    return await getServiceByBusinessId(businessId);
+  }
   
   export const updateServiceByIdService = async (id, data) => {
     return await updateService(id, data);

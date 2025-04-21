@@ -5,6 +5,7 @@ import {
   getServiceByIdController,
   updateServiceController,
   deleteServiceController,
+  getServiceByBusinessIdController
 } from "../controllers/services.controller.js";
 
 import { authenticateToken } from "../middleware/auth.middleware.js";
@@ -22,6 +23,11 @@ router.post(
 router.get("/", getAllServicesController);
 
 router.get("/:id", getServiceByIdController);
+
+router.get(
+  "/business/:businessId",
+  getServiceByBusinessIdController
+);
 
 router.put(
   "/:id",
