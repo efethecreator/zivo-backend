@@ -7,45 +7,45 @@ import {
   getAppointmentsByBusinessId,
   updateAppointmentStatus,
   assignWorkerToAppointment,
-} from "../repositories/appointment.repository.js";
+} from "../repositories/appointment.repository.js"
 
-export const createAppointmentWithServices = async (
-  appointmentData,
-  services
-) => {
-  const appointment = await createAppointment(appointmentData);
+export const createAppointmentWithServices = async (appointmentData, services) => {
+  const totalPrice = services.reduce((sum, s) => sum + s.price, 0)
 
-  const serviceEntries = services.map((s) => ({
+  const appointment = await createAppointment({
+    ...appointmentData,
+    totalPrice,
+  })
+
+  const entries = services.map((s) => ({
     appointmentId: appointment.id,
     serviceId: s.serviceId,
     priceAtBooking: s.price,
     durationAtBooking: s.duration,
-  }));
+  }))
 
-  await createAppointmentServices(serviceEntries);
-  return appointment;
-};
+  await createAppointmentServices(entries)
 
-export const getAppointmentsOfCustomer = async (customerId) => {
-  return await getAppointmentsByCustomer(customerId);
-};
+  return appointment
+}
+
+export const getAppointmentsOfCustomer = async (customerId) =>
+  await getAppointmentsByCustomer(customerId)
 
 export const getAppointmentDetails = async (id) => {
-  return await getAppointmentById(id);
-};
+  const appt = await getAppointmentById(id)
+  if (!appt || appt.isDeleted) return null
+  return appt
+}
 
-export const deleteAppointment = async (id, deletedBy) => {
-  return await softDeleteAppointment(id, deletedBy);
-};
+export const deleteAppointmentService = async (id, deletedBy) =>
+  await softDeleteAppointment(id, deletedBy)
 
-export const getAppointmentsForBusiness = async (businessId) => {
-  return await getAppointmentsByBusinessId(businessId);
-};
+export const getAppointmentsForBusiness = async (businessId) =>
+  await getAppointmentsByBusinessId(businessId)
 
-export const updateAppointmentStatusService = async (id, status) => {
-  return await updateAppointmentStatus(id, status);
-};
+export const updateAppointmentStatusService = async (id, status) =>
+  await updateAppointmentStatus(id, status)
 
-export const assignWorkerService = async (id, workerId) => {
-  return await assignWorkerToAppointment(id, workerId);
-};
+export const assignWorkerService = async (id, workerId) =>
+  await assignWorkerToAppointment(id, workerId)

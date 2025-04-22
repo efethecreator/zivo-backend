@@ -1,9 +1,10 @@
 import express from "express";
 import {
-  createBusinessWorkerController,
-  getBusinessWorkersController,
-  updateWorkerTypeController,
-  deleteBusinessWorkerController,
+  createWorkerController,
+  getWorkersController,
+  getWorkerByIdController,
+  updateWorkerController,
+  deleteWorkerController,
 } from "../controllers/businessWorker.controller.js";
 
 import { authenticateToken } from "../middleware/auth.middleware.js";
@@ -15,23 +16,35 @@ router.post(
   "/",
   authenticateToken,
   checkRole("store_owner", "admin"),
-  createBusinessWorkerController
+  createWorkerController
 );
 
-router.get("/:businessId", getBusinessWorkersController);
+router.get(
+  "/business/:businessId",
+  authenticateToken,
+  checkRole("store_owner", "admin"),
+  getWorkersController
+);
+
+router.get(
+  "/:id",
+  authenticateToken,
+  checkRole("store_owner", "admin"),
+  getWorkerByIdController
+);
 
 router.put(
   "/:id",
   authenticateToken,
   checkRole("store_owner", "admin"),
-  updateWorkerTypeController
+  updateWorkerController
 );
 
 router.delete(
   "/:id",
   authenticateToken,
   checkRole("store_owner", "admin"),
-  deleteBusinessWorkerController
+  deleteWorkerController
 );
 
 export default router;

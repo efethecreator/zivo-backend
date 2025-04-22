@@ -43,8 +43,6 @@ model Profile {
   user                User                @relation(fields: [userId], references: [id])
   businesses          Business[]         @relation("ProfileBusinesses")
   appointments        Appointment[]      @relation("ProfileAppointments")
-  appointmentsAsWorker Appointment[]     @relation("ProfileShifts")
-  reviews             Review[]           @relation("ProfileReviews")
   favorites           Favorite[]         @relation("ProfileFavorites")
 
   @@map("profiles")
@@ -107,7 +105,6 @@ model Business {
   services     Service[]
   appointments Appointment[]
   shifts       BusinessShift[]
-  reviews      Review[]           @relation("BusinessReviews")
   favorites    Favorite[]         @relation("BusinessFavorites")
   portfolios   Portfolio[]
 
@@ -169,21 +166,24 @@ model WorkerType {
 }
 
 model BusinessWorker {
+  id            String      @id @default(uuid())
+  businessId    String
+  workerTypeId  String
+  firstName     String
+  lastName      String
+  email         String
+  phone         String
+  isDeleted     Boolean     @default(false)
+  deletedAt     DateTime?
+  deletedBy     String?
 
-  id           String   @id @default(uuid())
-  businessId   String
-  workerTypeId String
-  firstName    String
-  lastName     String
-  isDeleted    Boolean  @default(false)
-  deletedAt    DateTime?
-  deletedBy    String?
-
-  business     Business   @relation(fields: [businessId], references: [id])
-  workerType   WorkerType @relation(fields: [workerTypeId], references: [id])
+  business      Business    @relation(fields: [businessId], references: [id])
+  workerType    WorkerType  @relation(fields: [workerTypeId], references: [id])
+  appointments  Appointment[]
 
   @@map("business_workers")
 }
+
 
 
 model Service {
@@ -208,7 +208,6 @@ model Service {
 }
 
 model Appointment {
-
   id              String   @id @default(uuid())
   customerId      String
   businessId      String
@@ -219,15 +218,16 @@ model Appointment {
   campaignId      String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  isDeleted   Boolean  @default(false)
-  deletedAt   DateTime?
-  deletedBy   String?
+  isDeleted       Boolean  @default(false)
+  deletedAt       DateTime?
+  deletedBy       String?
 
-  customer            Profile              @relation("ProfileAppointments", fields: [customerId], references: [id])
-  business            Business             @relation(fields: [businessId], references: [id])
-  worker              Profile              @relation("ProfileShifts", fields: [workerId], references: [id])
-  campaign            BusinessCampaign?    @relation(fields: [campaignId], references: [id])
+  customer        Profile              @relation("ProfileAppointments", fields: [customerId], references: [id])
+  business        Business             @relation(fields: [businessId], references: [id])
+  worker          BusinessWorker       @relation(fields: [workerId], references: [id])
+  campaign        BusinessCampaign?    @relation(fields: [campaignId], references: [id])
   appointmentServices AppointmentService[]
+  review          Review?
 
   @@map("appointments")
 }
@@ -280,21 +280,20 @@ model BusinessShift {
 }
 
 model Review {
-  id         String   @id @default(uuid())
-  customerId String
-  businessId String
-  rating     Int
-  comment    String
-  createdAt  DateTime @default(now())
-  isDeleted   Boolean  @default(false)
-  deletedAt   DateTime?
-  deletedBy   String?
+  id             String   @id @default(uuid())
+  appointmentId  String   @unique
+  rating         Int
+  comment        String
+  createdAt      DateTime @default(now())
+  isDeleted      Boolean  @default(false)
+  deletedAt      DateTime?
+  deletedBy      String?
 
-  customer Profile  @relation("ProfileReviews", fields: [customerId], references: [id])
-  business Business @relation("BusinessReviews", fields: [businessId], references: [id])
+  appointment    Appointment @relation(fields: [appointmentId], references: [id])
 
   @@map("reviews")
 }
+
 
 model Favorite {
   id         String   @id @default(uuid())

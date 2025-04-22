@@ -1,45 +1,54 @@
 import {
-    addWorkerToBusiness,
-    getWorkersOfBusiness,
-    updateWorkerRole,
-    removeWorker,
-  } from "../services/businessWorker.service.js";
-  
-  export const createBusinessWorkerController = async (req, res) => {
-    try {
-      const worker = await addWorkerToBusiness(req.body);
-      res.status(201).json(worker);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  };
-  
-  export const getBusinessWorkersController = async (req, res) => {
-    try {
-      const workers = await getWorkersOfBusiness(req.params.businessId);
-      res.json(workers);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  };
+  createWorker,
+  getWorkersOfBusiness,
+  getWorker,
+  updateWorker,
+  deleteWorker,
+} from "../services/businessWorker.service.js";
 
-  
-  
-  export const updateWorkerTypeController = async (req, res) => {
-    try {
-      const updated = await updateWorkerRole(req.params.id, req.body.workerTypeId);
-      res.json(updated);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  };
-  
-  export const deleteBusinessWorkerController = async (req, res) => {
-    try {
-      await removeWorker(req.params.id, req.user.userId);
-      res.json({ message: "Çalışan soft silindi" });
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  };
-  
+export const createWorkerController = async (req, res) => {
+  try {
+    const data = req.body;
+    const worker = await createWorker(data);
+    res.status(201).json(worker);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getWorkersController = async (req, res) => {
+  try {
+    const list = await getWorkersOfBusiness(req.params.businessId);
+    res.json(list);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const getWorkerByIdController = async (req, res) => {
+  try {
+    const worker = await getWorker(req.params.id);
+    if (!worker) return res.status(404).json({ message: "Çalışan bulunamadı" });
+    res.json(worker);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const updateWorkerController = async (req, res) => {
+  try {
+    const updated = await updateWorker(req.params.id, req.body);
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const deleteWorkerController = async (req, res) => {
+  try {
+    await deleteWorker(req.params.id, req.user.userId); // veya req.user.email
+    res.json({ message: "Çalışan soft silindi" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

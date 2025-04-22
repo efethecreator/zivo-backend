@@ -1,22 +1,21 @@
 import prisma from "../../prisma/client.js";
 
-export const createBusinessWorker = (data) => prisma.businessWorker.create({ data });
+export const createBusinessWorker = (data) =>
+  prisma.businessWorker.create({ data });
 
-export const getBusinessWorkers = (businessId) =>
+export const getBusinessWorkersByBusinessId = (businessId) =>
   prisma.businessWorker.findMany({
-    where: {
-      businessId,
-      isDeleted: false,
-    },
-    include: {       
-      workerType: true,   
-    },
+    where: { businessId, isDeleted: false },
+    include: { workerType: true }
   });
 
-export const updateWorkerType = (id, workerTypeId) =>
+export const getBusinessWorkerById = (id) =>
+  prisma.businessWorker.findUnique({ where: { id } });
+
+export const updateBusinessWorker = (id, data) =>
   prisma.businessWorker.update({
     where: { id },
-    data: { workerTypeId },
+    data,
   });
 
 export const softDeleteBusinessWorker = (id, deletedBy) =>

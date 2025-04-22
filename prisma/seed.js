@@ -1,159 +1,203 @@
-import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcrypt";
 
-const prisma = new PrismaClient();
+import 'dotenv/config'
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+import { Decimal } from '@prisma/client/runtime/library.js'
 
 async function main() {
-  console.log("🌱 Seeding started...");
+  console.log("🌱 Seeding...")
 
-  const saltRounds = 10;
+  await prisma.role.createMany({
+    data: [
+      { name: 'admin' },
+      { name: 'store_owner' },
+      { name: 'customer' }
+    ],
+    skipDuplicates: true
+  })
 
-  const [adminRole, ownerRole, customerRole] = await Promise.all([
-    prisma.role.upsert({
-      where: { name: "admin" },
-      update: {},
-      create: { name: "admin" },
-    }),
-    prisma.role.upsert({
-      where: { name: "store_owner" },
-      update: {},
-      create: { name: "store_owner" },
-    }),
-    prisma.role.upsert({
-      where: { name: "customer" },
-      update: {},
-      create: { name: "customer" },
-    }),
-  ]);
-  
-
-  const [adminPass, customerPass, ownerPass] = await Promise.all([
-    bcrypt.hash("adminpass", saltRounds),
-    bcrypt.hash("customerpass", saltRounds),
-    bcrypt.hash("ownerpass", saltRounds),
-  ]);
-
-  const [adminUser, customerUser, storeOwnerUser] = await Promise.all([
-    prisma.user.create({
-      data: {
-        fullName: "Admin User",
-        email: "admin1@example.com",
-        passwordHash: adminPass,
-        userType: "admin",
-        isLawApproved: true,
+  const admin = await prisma.user.create({
+    data: {
+      fullName: 'Admin',
+      email: 'admin1@example.com',
+      passwordHash: 'hashedadmin',
+      userType: 'admin',
+      isLawApproved: true,
+      profile: {
+        create: {
+          phone: '1111111111',
+          location: 'Admin City',
+          gender: 'other',
+          biography: 'System admin',
+          photoUrl: '',
+        }
       },
-    }),
-    prisma.user.create({
-      data: {
-        fullName: "Customer User",
-        email: "customer1@example.com",
-        passwordHash: customerPass,
-        userType: "customer",
-        isLawApproved: true,
-      },
-    }),
-    prisma.user.create({
-      data: {
-        fullName: "Store Owner",
-        email: "owner1@example.com",
-        passwordHash: ownerPass,
-        userType: "store_owner",
-        isLawApproved: true,
-      },
-    }),
-  ]);
+      roles: { create: [{ role: { connect: { name: 'admin' } } }] }
+    },
+    include: { profile: true }
+  })
 
-  await Promise.all([
-    prisma.userRole.create({ data: { userId: adminUser.id, roleId: adminRole.id } }),
-    prisma.userRole.create({ data: { userId: customerUser.id, roleId: customerRole.id } }),
-    prisma.userRole.create({ data: { userId: storeOwnerUser.id, roleId: ownerRole.id } }),
-  ]);
+  const storeOwner = await prisma.user.create({
+    data: {
+      fullName: 'Store Owner',
+      email: 'store1@example.com',
+      passwordHash: 'hashedstore',
+      userType: 'store_owner',
+      isLawApproved: true,
+      profile: {
+        create: {
+          phone: '2222222222',
+          location: 'Salon Street',
+          gender: 'female',
+          biography: 'Owner of the best salon',
+          photoUrl: '',
+        }
+      },
+      roles: { create: [{ role: { connect: { name: 'store_owner' } } }] }
+    },
+    include: { profile: true }
+  })
 
-  const [adminProfile, customerProfile, storeOwnerProfile] = await Promise.all([
-    prisma.profile.create({
-      data: {
-        userId: adminUser.id,
-        phone: "1111111111",
-        location: "Admin City",
-        gender: "Other",
-        biography: "I am the admin.",
-        photoUrl: "",
+  const customer = await prisma.user.create({
+    data: {
+      fullName: 'Customer',
+      email: 'customer1@example.com',
+      passwordHash: 'hashedcustomer',
+      userType: 'customer',
+      isLawApproved: true,
+      profile: {
+        create: {
+          phone: '3333333333',
+          location: 'Customer Town',
+          gender: 'male',
+          biography: 'Loyal customer',
+          photoUrl: '',
+        }
       },
-    }),
-    prisma.profile.create({
-      data: {
-        userId: customerUser.id,
-        phone: "2222222222",
-        location: "Customer Town",
-        gender: "Female",
-        biography: "Loyal customer.",
-        photoUrl: "",
-      },
-    }),
-    prisma.profile.create({
-      data: {
-        userId: storeOwnerUser.id,
-        phone: "3333333333",
-        location: "Store District",
-        gender: "Male",
-        biography: "Owner of the store.",
-        photoUrl: "",
-      },
-    }),
-  ]);
+      roles: { create: [{ role: { connect: { name: 'customer' } } }] }
+    },
+    include: { profile: true }
+  })
 
-  const barbershopType = await prisma.businessType.create({
-    data: { name: "Barbershop" },
-  });
+  const businessType = await prisma.businessType.create({
+    data: { name: 'Kuaför' }
+  })
+
+  const workerType = await prisma.workerType.create({
+    data: { name: 'Berber' }
+  })
 
   const business = await prisma.business.create({
     data: {
-      ownerId: storeOwnerProfile.id,
-      name: "Cool Cuts",
-      description: "Trendy barbershop in the city.",
-      address: "123 Main St",
-      latitude: 40.0,
-      longitude: 29.0,
-      phone: "555-0101",
-      profileImageUrl: "",
-      coverImageUrl: "",
-      businessTypeId: barbershopType.id,
-      isVerified: true,
-    },
-  });
+      name: 'Gold Scissors',
+      description: 'En iyi saç salonu',
+      address: 'İstanbul, Beşiktaş',
+      latitude: new Decimal('41.0438'),
+      longitude: new Decimal('29.0083'),
+      phone: '+90 212 555 5555',
+      profileImageUrl: '',
+      coverImageUrl: '',
+      businessTypeId: businessType.id,
+      ownerId: storeOwner.profile.id
+    }
+  })
 
-  const haircut = await prisma.service.create({
+  const worker = await prisma.businessWorker.create({
     data: {
       businessId: business.id,
-      name: "Haircut",
-      description: "Men's haircut",
-      durationMinutes: 30,
-      price: 100.0,
-      category: "Hair",
-    },
-  });
+      workerTypeId: workerType.id,
+      firstName: 'Zeynep',
+      lastName: 'Çelik',
+      email: 'zeynep@scissors.com',
+      phone: '4444444444'
+    }
+  })
 
-  const barberType = await prisma.workerType.create({
-    data: { name: "Barber" },
-  });
-
-  await prisma.businessWorker.create({
+  const service1 = await prisma.service.create({
     data: {
       businessId: business.id,
-      workerTypeId: barberType.id,
-      firstName: "Anıl",
-      lastName: "Piyancı"
-    },
-  });
+      name: 'Saç Kesimi',
+      description: 'Profesyonel saç kesimi',
+      price: new Decimal('250'),
+      durationMinutes: 40,
+      category: 'Hair',
+    }
+  })
 
-  console.log("✅ Seeding completed successfully.");
+  const service2 = await prisma.service.create({
+    data: {
+      businessId: business.id,
+      name: 'Fön Çekimi',
+      description: 'Günlük fön hizmeti',
+      price: new Decimal('150'),
+      durationMinutes: 25,
+      category: 'Hair',
+    }
+  })
+
+  const appointment = await prisma.appointment.create({
+    data: {
+      customerId: customer.profile.id,
+      businessId: business.id,
+      workerId: worker.id,
+      appointmentTime: new Date('2025-05-01T10:00:00.000Z'),
+      totalPrice: new Decimal('400'),
+      status: 'completed'
+    }
+  })
+
+  await prisma.appointmentService.createMany({
+    data: [
+      {
+        appointmentId: appointment.id,
+        serviceId: service1.id,
+        priceAtBooking: new Decimal('250'),
+        durationAtBooking: 40
+      },
+      {
+        appointmentId: appointment.id,
+        serviceId: service2.id,
+        priceAtBooking: new Decimal('150'),
+        durationAtBooking: 25
+      }
+    ]
+  })
+
+  await prisma.review.create({
+    data: {
+      appointmentId: appointment.id,
+      rating: 5,
+      comment: 'Çok memnun kaldım, harikaydı!'
+    }
+  })
+
+  await prisma.favorite.create({
+    data: {
+      customerId: customer.profile.id,
+      businessId: business.id
+    }
+  })
+
+  await prisma.businessContact.create({
+    data: {
+      businessId: business.id,
+      contactName: 'Instagram',
+      contactValue: '@goldscissors'
+    }
+  })
+
+  await prisma.portfolio.create({
+    data: {
+      businessId: business.id,
+      imageUrl: 'https://placehold.co/600x400',
+      description: 'Öncesi-sonrası'
+    }
+  })
+
+  console.log("✅ Seed başarıyla tamamlandı.")
 }
 
-main()
-  .catch((e) => {
-    console.error("❌ Seeding failed:", e);
-    process.exit(1);
-  })
-  .finally(() => {
-    prisma.$disconnect();
-  });
+main().catch((e) => {
+  console.error("❌ Seed hatası:", e)
+  process.exit(1)
+})

@@ -135,6 +135,8 @@ CREATE TABLE "business_workers" (
     "workerTypeId" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "phone" TEXT NOT NULL,
     "isDeleted" BOOLEAN NOT NULL DEFAULT false,
     "deletedAt" TIMESTAMP(3),
     "deletedBy" TEXT,
@@ -221,8 +223,7 @@ CREATE TABLE "business_shifts" (
 -- CreateTable
 CREATE TABLE "reviews" (
     "id" TEXT NOT NULL,
-    "customerId" TEXT NOT NULL,
-    "businessId" TEXT NOT NULL,
+    "appointmentId" TEXT NOT NULL,
     "rating" INTEGER NOT NULL,
     "comment" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -269,6 +270,9 @@ CREATE UNIQUE INDEX "profiles_userId_key" ON "profiles"("userId");
 -- CreateIndex
 CREATE UNIQUE INDEX "roles_name_key" ON "roles"("name");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "reviews_appointmentId_key" ON "reviews"("appointmentId");
+
 -- AddForeignKey
 ALTER TABLE "profiles" ADD CONSTRAINT "profiles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -306,7 +310,7 @@ ALTER TABLE "appointments" ADD CONSTRAINT "appointments_customerId_fkey" FOREIGN
 ALTER TABLE "appointments" ADD CONSTRAINT "appointments_businessId_fkey" FOREIGN KEY ("businessId") REFERENCES "businesses"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "appointments" ADD CONSTRAINT "appointments_workerId_fkey" FOREIGN KEY ("workerId") REFERENCES "profiles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "appointments" ADD CONSTRAINT "appointments_workerId_fkey" FOREIGN KEY ("workerId") REFERENCES "business_workers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "appointments" ADD CONSTRAINT "appointments_campaignId_fkey" FOREIGN KEY ("campaignId") REFERENCES "business_campaigns"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -324,10 +328,7 @@ ALTER TABLE "business_shifts" ADD CONSTRAINT "business_shifts_businessId_fkey" F
 ALTER TABLE "business_shifts" ADD CONSTRAINT "business_shifts_shiftTimeId_fkey" FOREIGN KEY ("shiftTimeId") REFERENCES "shift_times"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "reviews" ADD CONSTRAINT "reviews_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "profiles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "reviews" ADD CONSTRAINT "reviews_businessId_fkey" FOREIGN KEY ("businessId") REFERENCES "businesses"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "reviews" ADD CONSTRAINT "reviews_appointmentId_fkey" FOREIGN KEY ("appointmentId") REFERENCES "appointments"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "favorites" ADD CONSTRAINT "favorites_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "profiles"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
