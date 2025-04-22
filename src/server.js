@@ -11,6 +11,7 @@ import appointmentRoutes from "./routes/appointment.routes.js";
 import businessWorkerRoutes from "./routes/businessWorker.routes.js";
 import workerTypeRoutes from "./routes/workerType.routes.js";
 import reviewRoutes from "./routes/review.routes.js";
+import favoriteRoutes from "./routes/favorites.routes.js";
 import dotenv from "dotenv";
 import cors from "cors";
 
@@ -37,6 +38,7 @@ app.use("/api/v1/appointments", appointmentRoutes);
 app.use("/api/v1/business-workers", businessWorkerRoutes); 
 app.use("/api/v1/worker-types", workerTypeRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
+app.use("/api/v1/favorites", favoriteRoutes);
 
 
 app.listen(PORT, () => {
