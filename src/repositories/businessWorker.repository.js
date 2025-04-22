@@ -8,8 +8,7 @@ export const getBusinessWorkers = (businessId) =>
       businessId,
       isDeleted: false,
     },
-    include: {
-      user: true,         
+    include: {       
       workerType: true,   
     },
   });
