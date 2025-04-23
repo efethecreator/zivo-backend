@@ -16,6 +16,8 @@ import portfolioRoutes from "./routes/portfolio.routes.js";
 import businessContactRoutes from "./routes/businessContact.routes.js";
 import shiftTimeRoutes from "./routes/shiftTime.routes.js";
 import businessShiftRoutes from "./routes/businessShift.routes.js";
+import exploreRoutes from "./routes/explore.routes.js";
+import dahboardRoutes from "./routes/dashboard.routes.js";
 import dotenv from "dotenv";
 import cors from "cors";
 
@@ -47,6 +49,9 @@ app.use("/api/v1/portfolios", portfolioRoutes);
 app.use("/api/v1/business-contacts", businessContactRoutes);
 app.use("/api/v1/shift-times", shiftTimeRoutes);
 app.use("/api/v1/business-shifts", businessShiftRoutes);
+app.use("/api/v1/explore", exploreRoutes);
+app.use("/api/v1/dashboard", dahboardRoutes);
+
 
 
 app.listen(PORT, () => {
