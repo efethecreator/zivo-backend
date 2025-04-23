@@ -13,6 +13,9 @@ import workerTypeRoutes from "./routes/workerType.routes.js";
 import reviewRoutes from "./routes/review.routes.js";
 import favoriteRoutes from "./routes/favorites.routes.js";
 import portfolioRoutes from "./routes/portfolio.routes.js";
+import businessContactRoutes from "./routes/businessContact.routes.js";
+import shiftTimeRoutes from "./routes/shiftTime.routes.js";
+import businessShiftRoutes from "./routes/businessShift.routes.js";
 import dotenv from "dotenv";
 import cors from "cors";
 
@@ -41,6 +44,9 @@ app.use("/api/v1/worker-types", workerTypeRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
 app.use("/api/v1/favorites", favoriteRoutes);
 app.use("/api/v1/portfolios", portfolioRoutes);
+app.use("/api/v1/business-contacts", businessContactRoutes);
+app.use("/api/v1/shift-times", shiftTimeRoutes);
+app.use("/api/v1/business-shifts", businessShiftRoutes);
 
 
 app.listen(PORT, () => {
