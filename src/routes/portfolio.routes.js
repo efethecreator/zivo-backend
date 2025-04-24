@@ -8,6 +8,7 @@ import {
 
 import { authenticateToken } from "../middleware/auth.middleware.js";
 import { checkRole } from "../middleware/role.middleware.js";
+import upload from "../services/uploadService.js";
 
 const router = express.Router();
 
@@ -18,7 +19,8 @@ router.get("/public/business/:businessId", getPortfoliosController);
 router.post(
   "/",
   authenticateToken,
-  checkRole("store_owner", "admin"),
+  checkRole("store_owner"),
+  upload.single("image"),
   createPortfolioController
 );
 

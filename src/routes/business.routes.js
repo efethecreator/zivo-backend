@@ -9,6 +9,7 @@ import {
 
 import { authenticateToken } from "../middleware/auth.middleware.js";
 import { checkRole } from "../middleware/role.middleware.js";
+import { aws3UploadFields } from "../middleware/aws3Upload.middleware.js";
 
 const router = express.Router();
 
@@ -16,6 +17,10 @@ router.post(
   "/",
   authenticateToken,
   checkRole("store_owner"),
+  aws3UploadFields([
+    { name: "profileImage", maxCount: 1 },
+    { name: "coverImage", maxCount: 1 },
+  ]),
   createBusinessController
 );
 
@@ -26,6 +31,10 @@ router.put(
   "/:id",
   authenticateToken,
   checkRole("store_owner", "admin"),
+  aws3UploadFields([
+    { name: "profileImage", maxCount: 1 },
+    { name: "coverImage", maxCount: 1 },
+  ]),
   updateBusinessController
 );
 
