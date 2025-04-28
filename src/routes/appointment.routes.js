@@ -7,6 +7,7 @@ import {
   getAppointmentsByBusinessIdController,
   updateAppointmentStatusController,
   assignWorkerToAppointmentController,
+  getRecentAppointmentsController,
 } from "../controllers/appointment.controller.js";
 
 import { authenticateToken } from "../middleware/auth.middleware.js";
@@ -24,7 +25,7 @@ router.post(
 router.get(
   "/my",
   authenticateToken,
-  checkRole("customer"),
+  checkRole("customer, store_owner, admin"),
   getMyAppointmentsController
 );
 
@@ -61,6 +62,11 @@ router.put(
   authenticateToken,
   checkRole("store_owner", "admin"),
   assignWorkerToAppointmentController
+);
+
+router.get(
+  "/business/:businessId/recent",
+  getRecentAppointmentsController
 );
 
 export default router;

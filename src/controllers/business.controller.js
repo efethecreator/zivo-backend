@@ -32,8 +32,10 @@ export const createBusinessController = async (req, res) => {
       );
     }
 
+    const { profileImage, coverImage, ...businessData } = req.body; // 🔥 Burada body'den ayırıyoruz
+
     const data = {
-      ...req.body,
+      ...businessData,
       ownerId: req.user.profileId,
       profileImageUrl,
       coverImageUrl,
@@ -42,6 +44,7 @@ export const createBusinessController = async (req, res) => {
     const business = await createBusiness(data);
     res.status(201).json(business);
   } catch (error) {
+    console.error("Business oluşturulamadı:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -72,7 +75,8 @@ export const updateBusinessController = async (req, res) => {
 
     // 👮‍♂️ Yetki kontrolü
     const existing = await getBusinessByIdService(id);
-    if (!existing) return res.status(404).json({ message: "Business bulunamadı" });
+    if (!existing)
+      return res.status(404).json({ message: "Business bulunamadı" });
 
     if (req.user.role !== "admin" && req.user.profileId !== existing.ownerId) {
       return res.status(403).json({ message: "Yetkisiz erişim" });

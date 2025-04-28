@@ -8,6 +8,7 @@ import {
   createUserRole,
 } from "../repositories/auth.repository.js";
 import { generateToken } from "../utils/jwt.js";
+import prisma from "../../prisma/client.js";
 
 export async function registerUser({ fullName, email, password, userType }) {
   const allowedRoles = ["customer", "store_owner"];
@@ -62,7 +63,7 @@ export async function loginUser(email, password) {
     userId: fullUser.id,
     email: fullUser.email,
     profileId: fullUser.profile.id, // 👈 işte bu!
-    role: fullUser.roles[0]?.role?.name || "unknown"
+    role: fullUser.roles[0]?.role?.name || "unknown",
   });
 
   return {
@@ -72,8 +73,8 @@ export async function loginUser(email, password) {
       email: fullUser.email,
       fullName: fullUser.fullName,
       profileId: fullUser.profile.id,
-      role: fullUser.roles[0]?.role?.name
-    }
+      role: fullUser.roles[0]?.role?.name,
+    },
   };
 }
 
@@ -82,5 +83,27 @@ export async function getMeById(userId) {
   if (!user) throw new Error("Kullanıcı bulunamadı");
 
   const { passwordHash, ...safeUser } = user;
-  return safeUser;
+
+  let businessId = null;
+
+  if (safeUser.userType === "store_owner") {
+    const business = await prisma.business.findFirst({
+      where: {
+        ownerId: safeUser.profile?.id,
+        isDeleted: false,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (business) {
+      businessId = business.id;
+    }
+  }
+
+  return {
+    ...safeUser,
+    businessId, // 🔥 businessId artık burada!
+  };
 }

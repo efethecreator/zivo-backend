@@ -5,8 +5,7 @@ export const findReviewByAppointmentId = (appointmentId) =>
     where: { appointmentId },
   });
 
-export const createReview = (data) =>
-  prisma.review.create({ data });
+export const createReview = (data) => prisma.review.create({ data });
 
 export const getReviewsByBusiness = (businessId) =>
   prisma.review.findMany({
@@ -20,7 +19,11 @@ export const getReviewsByBusiness = (businessId) =>
     include: {
       appointment: {
         include: {
-          customer: true,
+          customer: {
+            include: {
+              user: true, // 👈 işte asıl müşteri adını çekiyoruz!
+            },
+          },
           appointmentServices: {
             include: { service: true },
           },

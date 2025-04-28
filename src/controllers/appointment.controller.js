@@ -6,6 +6,7 @@ import {
   getAppointmentsForBusiness,
   updateAppointmentStatusService,
   assignWorkerService,
+  getRecentAppointmentsForBusiness,
 } from "../services/appointment.service.js"
 
 export const createAppointmentController = async (req, res) => {
@@ -81,3 +82,14 @@ export const assignWorkerToAppointmentController = async (req, res) => {
     res.status(500).json({ error: err.message })
   }
 }
+
+
+export const getRecentAppointmentsController = async (req, res) => {
+  try {
+    const list = await getRecentAppointmentsForBusiness(req.params.businessId);
+    res.json(list);
+  } catch (err) {
+    console.error("Recent Appointments Error:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
