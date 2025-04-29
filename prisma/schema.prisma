@@ -250,26 +250,27 @@ model AppointmentService {
 }
 
 model ShiftTime {
-
   id        String   @id @default(uuid())
   startTime DateTime
   endTime   DateTime
-  isDeleted   Boolean  @default(false)
-  deletedAt   DateTime?
-  deletedBy   String?
+  isActive  Boolean  @default(true) // ← EKLENDİ
+  isDeleted Boolean  @default(false)
+  deletedAt DateTime?
+  deletedBy String?
 
   businessShifts BusinessShift[]
 
   @@map("shift_times")
 }
 
-model BusinessShift {
 
+model BusinessShift {
   id          String @id @default(uuid())
   businessId  String
   shiftTimeId String
   dayOfWeek   Int
-  isDeleted   Boolean  @default(false)
+  isActive    Boolean @default(true) // ← EKLENDİ
+  isDeleted   Boolean @default(false)
   deletedAt   DateTime?
   deletedBy   String?
 
@@ -278,6 +279,7 @@ model BusinessShift {
 
   @@map("business_shifts")
 }
+
 
 model Review {
   id             String   @id @default(uuid())
