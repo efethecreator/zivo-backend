@@ -83,6 +83,10 @@ model Business {
   name            String
   description     String
   address         String
+  city            String?
+  district        String?
+  postalCode      String?
+  website         String? // hâlâ opsiyonel olarak bırakılabilir, eğer özel alan isteniyorsa
   latitude        Decimal
   longitude       Decimal
   phone           String
@@ -92,24 +96,24 @@ model Business {
   isVerified      Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  isDeleted   Boolean  @default(false)
-  deletedAt   DateTime?
-  deletedBy   String?
+  isDeleted       Boolean  @default(false)
+  deletedAt       DateTime?
+  deletedBy       String?
 
-
-  owner        Profile            @relation("ProfileBusinesses", fields: [ownerId], references: [id])
-  businessType BusinessType       @relation(fields: [businessTypeId], references: [id])
-  contacts     BusinessContact[]
-  campaigns    BusinessCampaign[]
-  workers      BusinessWorker[]
-  services     Service[]
-  appointments Appointment[]
-  shifts       BusinessShift[]
-  favorites    Favorite[]         @relation("BusinessFavorites")
-  portfolios   Portfolio[]
+  owner           Profile            @relation("ProfileBusinesses", fields: [ownerId], references: [id])
+  businessType    BusinessType       @relation(fields: [businessTypeId], references: [id])
+  contacts        BusinessContact[]
+  campaigns       BusinessCampaign[]
+  workers         BusinessWorker[]
+  services        Service[]
+  appointments    Appointment[]
+  shifts          BusinessShift[]
+  favorites       Favorite[]         @relation("BusinessFavorites")
+  portfolios      Portfolio[]
 
   @@map("businesses")
 }
+
 
 model BusinessType {
   id         String     @id @default(uuid())
