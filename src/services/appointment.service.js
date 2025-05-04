@@ -8,6 +8,7 @@ import {
   updateAppointmentStatus,
   assignWorkerToAppointment,
   getRecentAppointmentsByBusinessId,
+  rescheduleAppointment
 } from "../repositories/appointment.repository.js"
 
 export const createAppointmentWithServices = async (appointmentData, services) => {
@@ -53,3 +54,6 @@ export const assignWorkerService = async (id, workerId) =>
 
 export const getRecentAppointmentsForBusiness = async (businessId) =>
   await getRecentAppointmentsByBusinessId(businessId);
+
+export const rescheduleAppointmentService = async (id, newTime) =>
+  await rescheduleAppointment(id, newTime);

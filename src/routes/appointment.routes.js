@@ -8,6 +8,7 @@ import {
   updateAppointmentStatusController,
   assignWorkerToAppointmentController,
   getRecentAppointmentsController,
+  rescheduleAppointmentController
 } from "../controllers/appointment.controller.js";
 
 import { authenticateToken } from "../middleware/auth.middleware.js";
@@ -67,6 +68,13 @@ router.put(
 router.get(
   "/business/:businessId/recent",
   getRecentAppointmentsController
+);
+
+router.put(
+  "/:id/reschedule",
+  authenticateToken,
+  checkRole("customer"),
+  rescheduleAppointmentController
 );
 
 export default router;

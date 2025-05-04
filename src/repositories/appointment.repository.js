@@ -1,3 +1,5 @@
+// application/repositories/appointment.repository.js
+
 import prisma from "../../prisma/client.js";
 
 export const createAppointment = (data) =>
@@ -113,3 +115,12 @@ export const getRecentAppointmentsByBusinessId = async (businessId) => {
     status: appointment.status,
   }));
 };
+
+export const rescheduleAppointment = (id, newAppointmentTime) =>
+  prisma.appointment.update({
+    where: { id },
+    data: {
+      appointmentTime: new Date(newAppointmentTime),
+      updatedAt: new Date(),
+    },
+  });

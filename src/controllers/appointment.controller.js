@@ -7,6 +7,7 @@ import {
   updateAppointmentStatusService,
   assignWorkerService,
   getRecentAppointmentsForBusiness,
+  rescheduleAppointmentService
 } from "../services/appointment.service.js"
 
 export const createAppointmentController = async (req, res) => {
@@ -90,6 +91,22 @@ export const getRecentAppointmentsController = async (req, res) => {
     res.json(list);
   } catch (err) {
     console.error("Recent Appointments Error:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+export const rescheduleAppointmentController = async (req, res) => {
+  try {
+    const { appointmentTime } = req.body; // 👈 doğru key bu
+
+    if (!appointmentTime || isNaN(Date.parse(appointmentTime))) {
+      return res.status(400).json({ error: "Invalid or missing appointmentTime" });
+    }
+
+    const updated = await rescheduleAppointmentService(req.params.id, new Date(appointmentTime));
+    res.json(updated);
+  } catch (err) {
+    console.error("Reschedule error:", err);
     res.status(500).json({ error: err.message });
   }
 };
