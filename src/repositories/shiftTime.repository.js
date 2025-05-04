@@ -14,6 +14,8 @@ export const updateShiftTime = (id, data) =>
     data,
   });
 
+
+
 export const softDeleteShiftTime = (id, deletedBy) =>
   prisma.shiftTime.update({
     where: { id },

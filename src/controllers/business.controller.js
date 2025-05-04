@@ -5,6 +5,7 @@ import {
   updateBusinessService,
   deleteBusinessService,
 } from "../services/business.service.js";
+import { Prisma } from "@prisma/client";
 
 import { uploadToS3 } from "../services/uploadService.js"; // AWS S3 upload fonksiyonu
 
@@ -32,10 +33,13 @@ export const createBusinessController = async (req, res) => {
       );
     }
 
-    const { profileImage, coverImage, ...businessData } = req.body; // 🔥 Burada body'den ayırıyoruz
+    const { profileImage, coverImage, latitude, longitude, ...restData } =
+      req.body;
 
     const data = {
-      ...businessData,
+      ...restData,
+      latitude: new Prisma.Decimal(latitude),
+      longitude: new Prisma.Decimal(longitude),
       ownerId: req.user.profileId,
       profileImageUrl,
       coverImageUrl,

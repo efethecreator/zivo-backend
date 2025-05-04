@@ -25,7 +25,7 @@ router.post(
 router.get(
   "/my",
   authenticateToken,
-  checkRole("customer, store_owner, admin"),
+  checkRole("customer", "store_owner", "admin"),
   getMyAppointmentsController
 );
 

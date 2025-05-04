@@ -26,6 +26,7 @@ export const getAppointmentsByCustomer = (customerId) =>
     include: {
       business: true,
       worker: true,
+      review: true, // 👈 yorum eklendi
       appointmentServices: { include: { service: true } },
     },
     orderBy: { appointmentTime: "desc" },
@@ -37,6 +38,7 @@ export const getAppointmentById = (id) =>
     include: {
       business: true,
       worker: true,
+      review: true, // 👈 yorum eklendi
       appointmentServices: { include: { service: true } },
     },
   });
@@ -57,10 +59,11 @@ export const getAppointmentsByBusinessId = (businessId) =>
     include: {
       customer: {
         include: {
-          user: true, // 👈 Kullanıcının fullName'ini alabilmek için!
+          user: true,
         },
       },
       worker: true,
+      review: true, // 👈 yorum eklendi
       appointmentServices: {
         include: { service: true },
       },

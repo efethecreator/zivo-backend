@@ -22,14 +22,14 @@ router.post(
 router.get(
   "/business/:businessId",
   authenticateToken,
-  checkRole("store_owner", "admin"),
+  checkRole("customer", "store_owner", "admin"),
   getWorkersController
 );
 
 router.get(
   "/:id",
   authenticateToken,
-  checkRole("store_owner", "admin"),
+  checkRole("customer", "store_owner", "admin"),
   getWorkerByIdController
 );
 
