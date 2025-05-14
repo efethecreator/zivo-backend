@@ -1,45 +1,39 @@
-import { PrismaClient } from '@prisma/client';
+import {
+  findAllUsers,
+  findUserById,
+  deleteUser,
+  deleteUserRoles,
+  deleteUserProfile,
+  updateUser,
+} from "../repositories/user.repository.js";
 
-const prisma = new PrismaClient();
+export const getAllUsersService = () => findAllUsers();
 
-export const getAllUsersService = async () => {
-    return prisma.user.findMany();
-    }
+export const getUserByIdService = (id) => findUserById(id);
 
-export const getUserByIdService = async (id) => {
-        const userId = parseInt(id, 10); 
-        return prisma.user.findUnique({
-            where: {
-                id: userId
-            }
-        });
-    }
+export async function deleteUserByIdService(userId) {
+  const existingUser = await findUserById(userId);
+  if (!existingUser) {
+    throw new Error("Kullanıcı bulunamadı");
+  }
 
-export const createUserService = async (data) => {
-    return prisma.user.create({
-        data: {
-            ...data
-        }
-    });
+  await deleteUserRoles(userId);
+  await deleteUserProfile(userId);
+  await deleteUser(userId);
+
+  return { message: "Kullanıcı başarıyla silindi" };
 }
 
-export const updateUserService = async (id, data) => {
-    const userId = parseInt(id, 10);
-    return prisma.user.update({
-        where: {
-            id: userId
-        },
-        data: {
-            ...data
-        }
-    });
+export async function updateUserByIdService(id, data) {
+  const user = await findUserById(id);
+  if (!user) throw new Error("Kullanıcı bulunamadı");
+
+  return await updateUser(id, data);
 }
 
-export const deleteUserService = async (id) => {
-    const userId = parseInt(id, 10);
-    return prisma.user.delete({
-        where: {
-            id: userId
-        }
-    });
+export async function updateOwnUserService(userId, data) {
+  const user = await findUserById(userId);
+  if (!user) throw new Error("Kullanıcı bulunamadı");
+
+  return await updateUser(userId, data);
 }

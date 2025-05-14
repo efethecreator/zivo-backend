@@ -1,16 +1,21 @@
-import { Router } from 'express';
-import { createUser, getAllUsers, getUserById, updateUser, deleteUser } from '../controllers/user.controller.js';
+import express from "express";
+import {
+  getAllUsers,
+  getUserById,
+  deleteUserById,
+  updateUserById,
+  updateOwnUser,
+} from "../controllers/user.controller.js";
+import { checkRole } from "../middleware/role.middleware.js";
 
-const router = Router();
 
-router.post('/', createUser);
+const router = express.Router();
 
-router.get('/', getAllUsers);
+router.get("/", checkRole("admin"), getAllUsers);
+router.get("/:id", checkRole("admin"), getUserById);
+router.delete("/:id", checkRole("admin"), deleteUserById);
+router.put("/me", checkRole("customer", "store_owner", "admin"), updateOwnUser);
+router.put("/:id", checkRole("admin"), updateUserById); // Admin başkasını günceller
 
-router.get('/:id', getUserById);
-
-router.put('/:id', updateUser);
-
-router.delete('/:id', deleteUser);
 
 export default router;
