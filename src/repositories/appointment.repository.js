@@ -124,3 +124,27 @@ export const rescheduleAppointment = (id, newAppointmentTime) =>
       updatedAt: new Date(),
     },
   });
+
+export const getAppointmentsByBusinessIdAndDate = async (businessId, date) => {
+  const startOfDay = new Date(date);
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date(date);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  return await prisma.appointment.findMany({
+    where: {
+      businessId,
+      isDeleted: false,
+      appointmentTime: {
+        gte: startOfDay,
+        lte: endOfDay,
+      },
+    },
+    select: {
+      id: true,
+      appointmentTime: true,
+    },
+    orderBy: { appointmentTime: "asc" },
+  });
+};
