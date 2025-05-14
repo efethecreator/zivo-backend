@@ -29,7 +29,7 @@ app.use(
   cors({
     // Geliştirme ortamı için spesifik originler
     origin: [
-      "http://localhost:3000", // Web işletme paneli
+      "zivo-business-frontend-98ar.vercel.app", // Web işletme paneli
       "http://localhost:8081", // Expo web
       "exp://192.168.1.42:8081", // Expo Go - spesifik IP
       "exp://localhost:8081", // Expo Go - localhost
