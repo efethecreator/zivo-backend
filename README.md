@@ -90,4 +90,4 @@ For more endpoints, check the [src/routes](src/routes) directory.
 This repository is for the backend part of the Zivo project. Here are the frontend repositories:
 
 - **Mobile App:** https://github.com/efethecreator/zivo-frontend
-- **Business Web:** https://github.com/efethecreator/zivo-business-frontend
+- **Web For Business:** https://github.com/efethecreator/zivo-business-frontend
