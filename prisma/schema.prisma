@@ -86,7 +86,7 @@ model Business {
   city            String?
   district        String?
   postalCode      String?
-  website         String? // hâlâ opsiyonel olarak bırakılabilir, eğer özel alan isteniyorsa
+  website         String? 
   latitude        Decimal
   longitude       Decimal
   phone           String
@@ -224,7 +224,7 @@ model ServiceWorker {
   service    Service        @relation(fields: [serviceId], references: [id])
   worker     BusinessWorker @relation(fields: [workerId], references: [id])
 
-  @@unique([serviceId, workerId]) // Aynı çalışan aynı servise 2 kez atanamaz
+  @@unique([serviceId, workerId]) 
   @@map("service_workers")
 }
 
@@ -274,7 +274,7 @@ model ShiftTime {
   id        String   @id @default(uuid())
   startTime DateTime
   endTime   DateTime
-  isActive  Boolean  @default(true) // ← EKLENDİ
+  isActive  Boolean  @default(true) 
   isDeleted Boolean  @default(false)
   deletedAt DateTime?
   deletedBy String?
@@ -290,7 +290,7 @@ model BusinessShift {
   businessId  String
   shiftTimeId String
   dayOfWeek   Int
-  isActive    Boolean @default(true) // ← EKLENDİ
+  isActive    Boolean @default(true) 
   isDeleted   Boolean @default(false)
   deletedAt   DateTime?
   deletedBy   String?

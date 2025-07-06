@@ -36,7 +36,7 @@ export const updateBusinessShiftController = async (req, res) => {
       businessId,
       dayOfWeek,
       shiftTimeId,
-      ...(isActive !== undefined && { isActive }), // sadece varsa gönder
+      ...(isActive !== undefined && { isActive }), 
     });
 
     res.json(updated);

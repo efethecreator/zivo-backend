@@ -7,7 +7,7 @@ import {
   
   export const createShiftTimeController = async (req, res) => {
     try {
-      const { startTime, endTime, isActive = true } = req.body; // default olarak true
+      const { startTime, endTime, isActive = true } = req.body; 
       const created = await addShiftTimeService({ startTime, endTime, isActive });
       res.status(201).json(created);
     } catch (err) {
@@ -26,7 +26,7 @@ import {
   
   export const updateShiftTimeController = async (req, res) => {
     try {
-      const updated = await updateShiftTimeService(req.params.id, req.body); // isActive dahil olacak
+      const updated = await updateShiftTimeService(req.params.id, req.body); 
       res.json(updated);
     } catch (err) {
       res.status(500).json({ error: err.message });

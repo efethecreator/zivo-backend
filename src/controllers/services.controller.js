@@ -75,7 +75,7 @@ export const getServiceByBusinessIdController = async (req, res) => {
 export const assignWorkersToServiceController = async (req, res) => {
   try {
     const { id: serviceId } = req.params;
-    const { workerIds } = req.body; // workerIds: string[]
+    const { workerIds } = req.body; 
 
     if (!Array.isArray(workerIds) || workerIds.length === 0) {
       return res
@@ -90,7 +90,6 @@ export const assignWorkersToServiceController = async (req, res) => {
   }
 };
 
-// 🔹 Servise atanmış çalışanları getir (GET /services/:id/workers)
 export const getServiceWorkersController = async (req, res) => {
   try {
     const { id: serviceId } = req.params;
@@ -101,7 +100,6 @@ export const getServiceWorkersController = async (req, res) => {
   }
 };
 
-// 🔹 Servisten çalışanı sil (DELETE /services/:id/workers/:workerId)
 export const removeServiceWorkerController = async (req, res) => {
   try {
     const { id: serviceId, workerId } = req.params;

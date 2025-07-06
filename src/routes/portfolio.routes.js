@@ -12,10 +12,9 @@ import upload from "../services/uploadService.js";
 
 const router = express.Router();
 
-// 🔓 PUBLIC: Kullanıcılar mağaza portfolyosunu görüntüleyebilir
+
 router.get("/public/business/:businessId", getPortfoliosController);
 
-// 🔐 PORTFOLYO EKLEME
 router.post(
   "/",
   authenticateToken,
@@ -24,7 +23,6 @@ router.post(
   createPortfolioController
 );
 
-// 🔐 PORTFOLYO GET (Yönetici paneli için)
 router.get(
   "/business/:businessId",
   authenticateToken,
@@ -32,7 +30,6 @@ router.get(
   getPortfoliosController
 );
 
-// 🔐 PORTFOLYO GÜNCELLE
 router.put(
   "/:id",
   authenticateToken,
@@ -40,7 +37,6 @@ router.put(
   updatePortfolioController
 );
 
-// 🔐 PORTFOLYO SİL (soft delete)
 router.delete(
   "/:id",
   authenticateToken,

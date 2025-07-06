@@ -46,7 +46,7 @@ export const updateWorkerController = async (req, res) => {
 
 export const deleteWorkerController = async (req, res) => {
   try {
-    await deleteWorker(req.params.id, req.user.userId); // veya req.user.email
+    await deleteWorker(req.params.id, req.user.userId); 
     res.json({ message: "Çalışan soft silindi" });
   } catch (err) {
     res.status(500).json({ error: err.message });

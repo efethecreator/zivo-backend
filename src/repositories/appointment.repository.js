@@ -28,7 +28,7 @@ export const getAppointmentsByCustomer = (customerId) =>
     include: {
       business: true,
       worker: true,
-      review: true, // 👈 yorum eklendi
+      review: true, 
       appointmentServices: { include: { service: true } },
     },
     orderBy: { appointmentTime: "desc" },
@@ -40,7 +40,7 @@ export const getAppointmentById = (id) =>
     include: {
       business: true,
       worker: true,
-      review: true, // 👈 yorum eklendi
+      review: true, 
       appointmentServices: { include: { service: true } },
     },
   });
@@ -65,7 +65,7 @@ export const getAppointmentsByBusinessId = (businessId) =>
         },
       },
       worker: true,
-      review: true, // 👈 yorum eklendi
+      review: true, 
       appointmentServices: {
         include: { service: true },
       },
@@ -97,21 +97,21 @@ export const getRecentAppointmentsByBusinessId = async (businessId) => {
       },
     },
     orderBy: { appointmentTime: "desc" },
-    take: 5, // Son 5 randevu
+    take: 5, 
   });
 
   return appointments.map((appointment) => ({
     id: appointment.id,
-    customerName: appointment.customer?.user?.fullName || "Müşteri", // Eğer bağlı User var ise
-    customerPhoto: appointment.customer?.photoUrl || "", // Profil fotoğrafı
+    customerName: appointment.customer?.user?.fullName || "Müşteri", 
+    customerPhoto: appointment.customer?.photoUrl || "", 
     services: appointment.appointmentServices
       .map((as) => as.service?.name)
-      .join(", "), // Birden fazla service olabilir
-    appointmentDate: appointment.appointmentTime.toISOString().split("T")[0], // YYYY-MM-DD
+      .join(", "), 
+    appointmentDate: appointment.appointmentTime.toISOString().split("T")[0], 
     appointmentTime: appointment.appointmentTime
       .toISOString()
       .split("T")[1]
-      .slice(0, 5), // HH:MM
+      .slice(0, 5), 
     status: appointment.status,
   }));
 };

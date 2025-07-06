@@ -21,7 +21,7 @@ export const getReviewsByBusiness = (businessId) =>
         include: {
           customer: {
             include: {
-              user: true, // 👈 işte asıl müşteri adını çekiyoruz!
+              user: true, 
             },
           },
           appointmentServices: {

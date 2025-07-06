@@ -62,7 +62,7 @@ export async function loginUser(email, password) {
   const token = generateToken({
     userId: fullUser.id,
     email: fullUser.email,
-    profileId: fullUser.profile.id, // 👈 işte bu!
+    profileId: fullUser.profile.id, 
     role: fullUser.roles[0]?.role?.name || "unknown",
   });
 
@@ -104,6 +104,6 @@ export async function getMeById(userId) {
 
   return {
     ...safeUser,
-    businessId, // 🔥 businessId artık burada!
+    businessId,
   };
 }

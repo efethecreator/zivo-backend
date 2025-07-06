@@ -15,7 +15,7 @@ router.get("/", checkRole("admin"), getAllUsers);
 router.get("/:id", checkRole("admin"), getUserById);
 router.delete("/:id", checkRole("admin"), deleteUserById);
 router.put("/me", checkRole("customer", "store_owner", "admin"), updateOwnUser);
-router.put("/:id", checkRole("admin"), updateUserById); // Admin başkasını günceller
+router.put("/:id", checkRole("admin"), updateUserById); 
 
 
 export default router;

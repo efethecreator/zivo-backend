@@ -98,7 +98,7 @@ export const getRecentAppointmentsController = async (req, res) => {
 
 export const rescheduleAppointmentController = async (req, res) => {
   try {
-    const { appointmentTime } = req.body; // 👈 doğru key bu
+    const { appointmentTime } = req.body; // doğru key bu
 
     if (!appointmentTime || isNaN(Date.parse(appointmentTime))) {
       return res.status(400).json({ error: "Invalid or missing appointmentTime" });

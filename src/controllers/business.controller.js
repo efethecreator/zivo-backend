@@ -7,7 +7,7 @@ import {
 } from "../services/business.service.js";
 import { Prisma } from "@prisma/client";
 
-import { uploadToS3 } from "../services/uploadService.js"; // AWS S3 upload fonksiyonu
+import { uploadToS3 } from "../services/uploadService.js"; 
 
 export const createBusinessController = async (req, res) => {
   try {
@@ -77,7 +77,7 @@ export const updateBusinessController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // 👮‍♂️ Yetki kontrolü
+    // Yetki kontrolü
     const existing = await getBusinessByIdService(id);
     if (!existing)
       return res.status(404).json({ message: "Business bulunamadı" });
@@ -86,7 +86,6 @@ export const updateBusinessController = async (req, res) => {
       return res.status(403).json({ message: "Yetkisiz erişim" });
     }
 
-    // 🖼 Görsel güncelleme varsa S3'e upload et
     const profileImageFile = req.files?.profileImage?.[0];
     const coverImageFile = req.files?.coverImage?.[0];
 

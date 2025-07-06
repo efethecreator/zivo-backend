@@ -6,7 +6,6 @@ export async function updateProfile(req, res) {
   const profileData = req.body;
 
   try {
-    // 🖼 Görsel varsa S3'e yükle
     if (req.file) {
       const imageUrl = await uploadToS3(
         req.file.buffer,

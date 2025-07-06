@@ -11,14 +11,14 @@ export const getBusinessById = (id) =>
     .findUnique({
       where: { id },
       include: {
-        contacts: true, // Sosyal medya ve iletişim bilgileri
+        contacts: true, 
         shifts: {
           where: { isDeleted: false },
           include: {
-            shiftTime: true, // Saat aralıkları için join
+            shiftTime: true, 
           },
         },
-        businessType: true, // İstersen frontend'de gösterebilirsin
+        businessType: true,
       },
     })
     .then((business) => {

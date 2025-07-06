@@ -27,21 +27,18 @@ const app = express();
 
 app.use(
   cors({
-    // Geliştirme ortamı için spesifik originler
     origin: [
-      process.env.FRONTEND_URL || "http://localhost:3000", // Web işletme paneli
-      "http://localhost:8081", // Expo web
-      "exp://192.168.1.42:8081", // Expo Go - spesifik IP
-      "exp://localhost:8081", // Expo Go - localhost
-      "exp://192.168.1.*:8081", // Expo Go - LAN içindeki diğer IP'ler
-      // Expo Go uygulaması için
+      process.env.FRONTEND_URL || "http://localhost:3000", 
+      "http://localhost:8081",
+      "exp://192.168.1.42:8081", 
+      "exp://localhost:8081",
+      "exp://192.168.1.*:8081",
       "https://*.expo.io",
-      // Prodüksiyonda kullanılacak domainler
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
-    credentials: true, // Cookie/session kullanımı için gerekli
-    maxAge: 86400, // CORS önbellek süresi (24 saat)
+    credentials: true, 
+    maxAge: 86400, 
   })
 );
 

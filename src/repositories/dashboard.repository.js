@@ -1,6 +1,6 @@
 import prisma from "../../prisma/client.js";
 
-// ✅ 1. Bugünkü randevu sayısı
+
 export const getTodayAppointmentsCount = async (businessId) => {
   const start = new Date();
   start.setHours(0, 0, 0, 0);
@@ -20,11 +20,10 @@ export const getTodayAppointmentsCount = async (businessId) => {
   });
 };
 
-// ✅ 2. Bu haftaki randevu sayısı
 export const getThisWeekAppointmentsCount = async (businessId) => {
   const now = new Date();
   const start = new Date(now);
-  start.setDate(now.getDate() - now.getDay()); // Pazar = 0
+  start.setDate(now.getDate() - now.getDay()); 
   start.setHours(0, 0, 0, 0);
 
   const end = new Date(start);
@@ -43,7 +42,6 @@ export const getThisWeekAppointmentsCount = async (businessId) => {
   });
 };
 
-// ✅ 3. Bu ayki toplam gelir
 export const getMonthlyRevenueSum = async (businessId) => {
   const now = new Date();
   const start = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -66,7 +64,6 @@ export const getMonthlyRevenueSum = async (businessId) => {
   return result._sum.totalPrice || 0;
 };
 
-// ✅ 4. Yorum sayısı ve ortalama puan
 export const getReviewStatsByBusiness = async (businessId) => {
   const result = await prisma.review.aggregate({
     where: {

@@ -1,4 +1,4 @@
-// File: src/services/services.service.js
+// src/services/services.service.js
 import {
   createService as createRepo,
   getAllServices,
